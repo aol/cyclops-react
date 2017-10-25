@@ -10,6 +10,7 @@ import cyclops.collections.immutable.*;
 import cyclops.monads.Witness;
 import cyclops.stream.ReactiveSeq;
 import cyclops.stream.Spouts;
+import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 import org.junit.Before;
 import org.junit.Test;
@@ -257,6 +258,15 @@ public class ListXTest extends CollectionXTestsWithNulls {
     @Override
     public <U, T> FluentCollectionX<T> unfold(U seed, Function<? super U, Optional<Tuple2<T, U>>> unfolder) {
         return ListX.unfold(seed, unfolder);
+    }
+
+    @Test
+    public void testUnfoldRight() {
+        ListX list = ListX.unfoldRight(10, x -> x == 0 ? Optional.ofNullable(null) : Optional.of(Tuple.tuple(x - 1, x)));
+        assertEquals(10, list.size());
+        for (int i = 0; i < 10; ++i) {
+            assertEquals(10 - i, list.get(i));
+        }
     }
 
 }
